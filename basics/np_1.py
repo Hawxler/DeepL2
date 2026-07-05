@@ -134,3 +134,41 @@ np.savez_compressed("np_test2", array1=arr7, array2=arr8)
 
 #10. 배열의 형태 바꾸기
 # reshape(), flatten(), ravel(), transpose(), T
+#19.1 CNN 예
+#(1) 3x3 크기 흑백 이미지 2장 준비
+images = np.array([
+    [
+        [1, 2, 3],
+        [4, 5, 6],
+        [7, 8, 9]
+    ],
+    [
+        [10, 20, 30],
+        [40, 50, 60],
+        [70, 80, 90]
+    ]
+])
+
+print(images.shape) # (2, 3, 3) (이미지2장, 세로3픽셀, 가로3팩셀)
+
+#(2) CNN용 이미지로 변환(이미지수, 높, 넓, 채널)
+# 흑백이므로 1채녈: (2, 3, 3, 1)으로 reshape() -> 1줄로 만듦
+images_reshaped = images.reshape(2, 3, 3, 1)
+print(images_reshaped)
+print(images_reshaped.shape)  # (2, 3, 3, 1)
+
+#10.2 [기본 연습] 1행을 -> 여러 행으로 해보기
+arr10_2 = np.arange(12)
+print(arr10_2)
+# [ 0  1  2  3  4  5  6  7  8  9 10 11]
+
+arr10_2_1 = arr10_2.reshape(3, 4)
+print(arr10_2_1)
+'''
+[[ 0  1  2  3]
+ [ 4  5  6  7]
+ [ 8  9 10 11]]
+'''
+arr_flat = arr10_2_1.flatten()
+print(arr_flat)
+print(arr10_2_1.T)
