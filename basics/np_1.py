@@ -134,7 +134,69 @@ np.savez_compressed("np_test2", array1=arr7, array2=arr8)
 
 #10. 배열의 형태 바꾸기
 # reshape(), flatten(), ravel(), transpose(), T
-#19.1 CNN 예
+#10.1 기본 문법
+arr10_1 = np.array(range(1, 7)) #[1, 2, 3, 4, 5, 6]
+
+#(1) 1차원 -> 2차원으로
+#2x3으로 만들기
+arr10_1_1 = arr10_1.reshape(2, 3)
+print(arr10_1_1)
+'''
+[[1 2 3]
+ [4 5 6]]
+'''
+
+#(2) 1차원 -> 3차원으로
+#2x1x3
+arr10_1_2 = arr10_1.reshape(2, 1, 3)
+print(arr10_1_2)
+'''
+[[[1 2 3]]
+ [[4 5 6]]]
+'''
+
+#(3) 다차원 -> 1차원
+arr10_1_3 = arr10_1_1.reshape(6)
+print(arr10_1_3) # [1 2 3 4 5 6]
+
+arr10_1_4 = arr10_1_1.reshape(-1)  # -1: 자동계산
+print(arr10_1_4) # [1 2 3 4 5 6]
+
+arr10_1_5 = arr10_1_2.reshape(-1)  # -1: 자동계산
+print(arr10_1_5) # [1 2 3 4 5 6]
+
+arr10_1_6 = arr10_1_1.reshape(-1, 3)
+print(arr10_1_6)
+'''
+[[1 2 3]
+ [4 5 6]]
+'''
+
+arr10_1_7 = arr10_1_2.reshape(-1, 3)
+print(arr10_1_7)
+'''
+[[1 2 3]
+ [4 5 6]]
+'''
+
+arr10_1_8 = arr10_1_1.reshape(3, -1)
+print(arr10_1_8)
+'''
+[[1 2]
+ [3 4]
+ [5 6]]
+'''
+# reshape(-1, -1) -> Error
+
+#(4) 3차원 -> 2차원
+arr10_1_9 = arr10_1_2.reshape(2, 3)
+print(arr10_1_9)
+'''
+[[1 2 3]
+ [4 5 6]]
+'''
+
+#10.2 CNN 예
 #(1) 3x3 크기 흑백 이미지 2장 준비
 images = np.array([
     [
@@ -157,20 +219,76 @@ images_reshaped = images.reshape(2, 3, 3, 1)
 print(images_reshaped)
 print(images_reshaped.shape)  # (2, 3, 3, 1)
 
-#10.2 [기본 연습] 1행을 -> 여러 행으로 reshape 해보기
-arr10_2 = np.arange(12)
-print(arr10_2)
-# [ 0  1  2  3  4  5  6  7  8  9 10 11]
+# (2 * 3 * 4 * 1)
+x = np.arange(2 * 3 * 4 * 1)
+print(x)
 
-arr10_2_1 = arr10_2.reshape(3, 4)
-print(arr10_2_1)
-'''
-[[ 0  1  2  3]
- [ 4  5  6  7]
- [ 8  9 10 11]]
-'''
+x1 = x.reshape(2, 3, 4, 1)
+print(x1)
+
+print(x.shape)  # (24,)
+x_flat = x1.reshape(x.shape[0], -1)
+print(x_flat)
+print(x_flat.shape)  #(24, 1)
+print(x.flatten()) 
+print(x.reshape(-1))
+
+#(3) 이미지 변경
+# 픽셀 검/흰 변경
+img = np.zeros((5, 5))
+print(img)
+
+# 가운데만 1
+img[2, 2] = 1
+print(img)
+
+# 특정 영역 변경
+img[1:4, 1:4] = 255
+print(img)
 
 #10.3 [기본 연습] 여러 줄 -> 1줄로 flatten 해보기
-arr_flat = arr10_2_1.flatten()
+arr10_3_1 = np.array(range(1, 7))
+arr_flat = arr10_3_1.flatten()
 print(arr_flat)
-print(arr10_2_1.T)
+print(arr10_3_1.T)
+
+#11. flatten(): 무조건 1차원으로 펼치기
+arr11 = np.array(range(1, 7))
+arr11_2d = arr11.reshape(2, -1)
+print(arr11_2d)
+
+print(arr11_2d.flatten()) # [1 2 3 4 5 6]
+print(arr11_2d.shape)            # (2, 3)
+print(arr11_2d.flatten().shape)  # (6,)
+
+arr11_1 = np.array(range(1, 9))      # 8
+arr11_3d = arr11_1.reshape(2, 2, 2) # 2x2x2 = 8
+print(arr11_3d)
+'''
+[[[1 2]
+  [3 4]]
+
+ [[5 6]
+  [7 8]]]
+'''
+print(arr11_3d.flatten()) #[1 2 3 4 5 6 7 8]
+print(arr11_3d.shape, arr11_3d.flatten().shape) 
+
+#12. T, transpose(): 행과 열이 바뀜
+arr12 = np.array(range(1, 7))
+arr12 = arr12.reshape(2, -1)
+print(arr12)
+'''
+[[1 2 3]
+ [4 5 6]]
+'''
+arr12_T = arr12.T
+print(arr12_T)
+arr12_trans = arr12.transpose()
+print(arr12_trans)
+'''
+[[1 4]
+ [2 5]
+ [3 6]]
+'''
+print(arr12[1, 0], arr12_T[0, 1])

@@ -1,5 +1,23 @@
 import pandas as pd
 
+import pandas as pd
+
+s = pd.Series([10, 20, 30, 40])
+print(s)
+
+###########################
+'''
+df.head()        # 앞 5개 행 보기
+df.tail()        # 뒤 5개 행 보기
+df.info()        # 컬럼, 결측치, 자료형 정보
+df.describe()    # 숫자 데이터 통계 요약
+df.shape         # 행, 열 개수
+df.columns       # 컬럼 이름 확인
+df.index         # 인덱스 확인
+df.dtypes        # 각 컬럼의 자료형 확인
+'''
+###########################
+
 df = pd.read_csv(r"0_data\test4.csv")
 print(type(df))
 #1. 전반 정보
