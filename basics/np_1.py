@@ -157,7 +157,7 @@ images_reshaped = images.reshape(2, 3, 3, 1)
 print(images_reshaped)
 print(images_reshaped.shape)  # (2, 3, 3, 1)
 
-#10.2 [기본 연습] 1행을 -> 여러 행으로 해보기
+#10.2 [기본 연습] 1행을 -> 여러 행으로 reshape 해보기
 arr10_2 = np.arange(12)
 print(arr10_2)
 # [ 0  1  2  3  4  5  6  7  8  9 10 11]
@@ -169,6 +169,8 @@ print(arr10_2_1)
  [ 4  5  6  7]
  [ 8  9 10 11]]
 '''
+
+#10.3 [기본 연습] 여러 줄 -> 1줄로 flatten 해보기
 arr_flat = arr10_2_1.flatten()
 print(arr_flat)
 print(arr10_2_1.T)
