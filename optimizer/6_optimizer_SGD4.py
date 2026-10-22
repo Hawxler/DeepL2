@@ -1,3 +1,4 @@
+# 이 코드는 ‘배치 경사하강법으로 선형회귀의 가중치 w와 편향 b를 학습하는 예제
 # w, b 둘 다 업데이트하는 예
 # 간단한 데이터
 x_data = [1.0, 2.0, 3.0]
@@ -15,9 +16,9 @@ for epoch in range(20):
     # 전체 데이터에 대해 loss와 gradient 계산
     for x, y in zip(x_data, y_data):
         pred = w * x + b
-        error = pred - y
+        error = pred - y    # y^ - y
 
-        loss += error ** 2  # MES의 합 형태
+        loss += error ** 2  # MSE의 합 형태
         dw += 2 * error * x # d/dw: error**2*x->2error*x
         db += 2 * error     # d/db: error**2+b->2error
     
