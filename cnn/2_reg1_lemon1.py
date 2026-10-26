@@ -1,6 +1,6 @@
 # Keras Functional API 코드
 # 데이터 파일 다운로드(CoLab 이용 시)
-# !wget https://raw.githubusercontent.com/hawklux/DeepLearn/main/1_Data/lemonade.csv
+# !wget https://raw.githubusercontent.com/hawklux/DeepLearn/refs/heads/main/0_Data/bong/lemonade.csv
 
 import tensorflow as tf
 import pandas as pd
@@ -8,7 +8,7 @@ import numpy as np
 
 #1. 데이터 준비
 # PC 이용 시
-url = "https://raw.githubusercontent.com/hawklux/DeepLearn/main/1_Data/lemonade.csv"
+url = "https://raw.githubusercontent.com/hawklux/DeepLearn/refs/heads/main/0_Data/bong/lemonade.csv"
 lemonade = pd.read_csv(url)
 # lemonade = pd.read_csv('/content/lemonade.csv')
 print(lemonade.head())

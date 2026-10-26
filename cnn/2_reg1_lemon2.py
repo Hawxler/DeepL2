@@ -4,7 +4,7 @@ import pandas as pd
 import numpy as np
 
 # 1. 데이터 준비
-url = "https://raw.githubusercontent.com/hawklux/DeepLearn/main/1_Data/lemonade.csv"
+url = "https://raw.githubusercontent.com/hawklux/DeepLearn/refs/heads/main/0_Data/bong/lemonade.csv"
 data = pd.read_csv(url)
 print(data.head())
 
