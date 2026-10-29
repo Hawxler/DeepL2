@@ -18,3 +18,8 @@ Thumbs.db
 
 # Jupyter
 .ipynb_checkpoints/
+
+# CIFAR10, MNIST data sets
+cnn/mnist/data/
+cnn/CIFAR10/data/
+data/

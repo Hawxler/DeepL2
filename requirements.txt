@@ -1,9 +1,38 @@
+# 환경: Windows 64비트 / Python 3.10
+###################################################################
+# # 실행법
+# & .\myenv\Scripts\python.exe -m pip install -r requirements.txt
+# & .\myenv\Scripts\python.exe -m pip check
+###################################################################
+# PyTorch CUDA 패키지 다운로드 경로
+--extra-index-url https://download.pytorch.org/whl/cu126
+
+# 수치 계산 / 데이터 처리
 numpy==1.26.4
 pandas==2.2.2
 scipy==1.11.4
 
+# TensorFlow / Keras
 tensorflow==2.16.1
-scikit-learn==1.4.2
 
+# PyTorch / 이미지 / 오디오: CUDA 12.6 빌드
+torch==2.6.0+cu126
+torchvision==0.21.0+cu126
+torchaudio==2.6.0+cu126
+
+# 머신러닝 / 시각화
+scikit-learn==1.4.2
 matplotlib==3.8.4
 tqdm==4.66.4
+
+
+#[PyTorch 없는 버전]
+# numpy==1.26.4
+# pandas==2.2.2
+# scipy==1.11.4
+
+# tensorflow==2.16.1
+# scikit-learn==1.4.2
+
+# matplotlib==3.8.4
+# tqdm==4.66.4

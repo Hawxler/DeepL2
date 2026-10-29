@@ -101,7 +101,7 @@ class IrisModel1(nn.Module):
         self.output = nn.Linear(8, 3)
 
     def forward(self, x):
-        x = self.hidden(x)
+        x = self.hidden1(x)
         x = self.bn1(x)
         x = self.relu(x)
         x = self.dropout(x)
@@ -125,6 +125,7 @@ y_train_tensor = torch.from_numpy(y_train) #원-핫 (120, 3): [1.0, 0.0, 0.0]
 
 x_test_tensor = torch.from_numpy(X_test)
 y_test_tensor = torch.from_numpy(y_test)
+x_new_tensor = torch.from_numpy(X_new)
 
 # 3.2 배치 준비
 train_dataset = TensorDataset(x_train_tensor, y_train_tensor)
@@ -139,7 +140,7 @@ train_loader = DataLoader(
 # 3.3 손실함수와 옵티마이저 설정
 # CrossEntropyloss는 로짓과 실수 원-핫 정답도 받을 수 있음.
 loss_fn = nn.CrossEntropyLoss() # logit을 받아 로그 확률 도출 = 출력 레이어에서 suftmax 없어도 argmax로 정답 도출
-optimizer = torch.optim.Adam(model.parameters(), li=0.001)
+optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
 
 # 3.4 학습
 for epoch in range(200):
@@ -150,9 +151,71 @@ for epoch in range(200):
 
     # 배치(크기 최대 16)별 계산: 손실-기울기 계산 > 파라미터 업데이트
     for batch_x, batch_y in train_loader:
-        optimizer.zero_grad() # 
+        optimizer.zero_grad() # 배치마다 미분값 초기화: w_new = (w_cur 1.0) - (학습률 0.1 * 미분값 2.0) = 1.0 - 0.2 = 0.8 -> 가중치 0.8은 다음 배치로 넘김, 미분값 0.1은 지우고(0) 배치마다 다시 계산하게 함.
+        logits = model(batch_x)         # 순전파: 활성함수에 넣을 로짓
+        loss = loss_fn(logits, batch_y) # 손실 = -log(정답 클래스의 예측 확률)
+        loss.backward()                 # 기울기 계산만 함(적용은 step()가 함)
+        optimizer.step() # 역전파로 계산된 기울기를 바탕으로 최적화 규칙(Adam)에 따라 모델의 가중치와 편향을 갱신함.
 
+        batch_size = batch_x.size(0) # 텐서의 0번(현재 배치)의 차원 크기
+        total_loss += loss.item() * batch_size #loss.item(): loss 텐서에서 값 꺼냄
+        # 추후: loss 계산 = 배치 평균 손실 = total_loss / sample_count
+
+        predicted_indices = logits.argmax(dim=1) # 예측 정답: 가장 큰 값이 있는 위치의 인덱스
+        true_indices = batch_y.argmax(dim=1) # 진짜 정답: [1.0, 0.0, 0.0] -> 0 (원-핫 중 정답 인덱스)
+        # (예측 정답, 진짜 정답 비교).sum() -> 맞은 개수: 추후 정확도(Accuracy) 계산
+        correct += (predicted_indices == true_indices).sum().item()
+        sample_count += batch_size
+
+    if (epoch + 1) % 20 == 0:
+        average_loss = total_loss / sample_count # 모니터링용 평균손실(계산용 아님)
+        accuracy = correct / sample_count        # 모니터링용 정확도 = keras에서 model.compile(matrix=['accuracy'])와 동일한 평가 지표
+        print(
+            f"Epoch {epoch + 1:3d} / 200 | "
+            f"loss: {average_loss:.4f} | "
+            f"Accuracy: {accuracy:.2%}"
+        )
 
 #################################################
 # 4. 평가 > 추론: Sequential/Functinal 동일
 #################################################
+# 4.1 평가
+model.eval()  # model.train() 모드에서 .eval() 모드로 전환
+# .eval() 모드에서는:
+# - dropouit() 꺼서 모든 뉴런 사용
+# - BatchNorm 꺼서 모든 데이터의 누적 평균과 분산 사용
+
+with torch.no_grad():
+    test_logits = model(x_test_tensor)
+    test_loss = loss_fn(test_logits, y_test_tensor).item()
+
+    predicted_indices = test_logits.argmax(dim=1) # dim=0: 행 비교, 1=열 비교 max
+    true_indices = y_test_tensor.argmax(dim=1)
+
+    test_accuracy = (
+        (predicted_indices == true_indices).float().mean().item()
+    )
+    # predicted_indices == true_indices: [True, False, True, True] 불리언 텐서
+    # .float(): [True, False, True, True] -> [1.0, 0.0, 1.0, 1.0]
+    # .mean(): ([0.75]) Accuracy
+    # .item(): 0.75
+
+print(f"테스트 손실: {test_loss:.4f}")
+print(f"테스트 정확도: {test_accuracy:.2%}")
+
+# 4.2 추론
+model.eval()  # model.train() 모드 -> .eval() 모드로 전환
+
+with torch.no_grad():
+    logits = model(x_new_tensor)
+
+    # 추론에서 로짓 -> 확률 변환
+    probabilities = torch.softmax(logits, dim=1)
+    predicted_indices = probabilities.argmax(dim=1)
+
+for i, class_index in enumerate(predicted_indices.tolist()):
+    print(
+        f"입력: {X_new_raw[i]} | "
+        f"예측 품종: {class_names[class_index]} | "
+        f"확률: {np.round(probabilities[i].numpy(), 4)}"
+    )

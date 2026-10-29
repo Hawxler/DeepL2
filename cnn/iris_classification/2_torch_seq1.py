@@ -140,8 +140,8 @@ for epoch in range(200):
         optimizer.zero_grad()  # 배치마다 미분값 초기화: w_new = (w_cur 1.0) - (학습률 0.1 * 미분값 2.0) = 1.0 - 0.2 = 0.8 -> 가중치 0.8은 다음 배치로 넘김, 미분값 2.0은 지우고(0) 배치마다 다시 계산하게 함.
         logits = model(batch_x)          # 순전파: 활성함수에 넣을 로짓
         loss = loss_fn(logits, batch_y)  # 손실 = -log(정답 클래스의 예측 확률)
-        loss.backward()                  # 기울기 계산만 (적용은 step()가 함)
-        optimizer.step() # 계산된 기울기를 바탕으로 최적화 규칙(Adam)에 따라 모델의 가중치와 편향을 갱신함.
+        loss.backward()                  # 기울기 계산만 함(적용은 step()가 함)
+        optimizer.step() # 역전파로 계산된 기울기를 바탕으로 최적화 규칙(Adam)에 따라 모델의 가중치와 편향을 갱신함.
 
         batch_size = batch_x.size(0) # 텐서의 0번(현재 배치)의 차원 크기
         total_loss += loss.item() * batch_size #loss.item(): loss 텐서에서 값 꺼냄
